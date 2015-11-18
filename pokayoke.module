@@ -1,0 +1,56 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function pokayoke_menu() {
+  $items['admin/config/system/pokayoke'] = array(
+    'title' => 'Poka-yoke',
+    'description' => 'Fool proofing settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pokayoke_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'pokayoke.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_form_FORD_ID_alter()
+ */
+function pokayoke_form_features_export_form_alter(&$form, &$form_state, $form_id) {
+  if (isset($form['advanced']['generate']) && variable_get('pokayoke_features_disable_generation', FALSE)) {
+    $form['advanced']['generate']['#access'] = FALSE;
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function pokayoke_form_update_manager_update_form_alter(&$form, &$form_state, $form_id) {
+  if (!empty($form['actions']['submit']) && variable_get('pokayoke_update_disable_upgrade', FALSE)) {
+    $form['actions']['submit']['#access'] = FALSE;
+  }
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function pokayoke_menu_alter(&$items) {
+  if (variable_get('pokayoke_update_disable_install', FALSE)) {
+
+    if (!empty($items['admin/appearance/install'])) {
+      $items['admin/appearance/install']['access callback'] = FALSE;
+    }
+
+    if (!empty($items['admin/modules/install'])) {
+      $items['admin/modules/install']['access callback'] = FALSE;
+    }
+
+    if (!empty($items['admin/reports/updates/install'])) {
+      $items['admin/reports/updates/install']['access callback'] = FALSE;
+    }
+
+  }
+}

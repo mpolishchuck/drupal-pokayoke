@@ -1,0 +1,7 @@
+name = "Poka-yoke"
+description = "Implements some fool proofing things"
+package = Development
+core = 7.x
+version = 7.x-0.00
+
+configure = admin/config/system/pokayoke
